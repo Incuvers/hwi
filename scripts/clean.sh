@@ -11,7 +11,6 @@ handler () {
 }
 
 printf "%b" "${OKB}Cleaning docker environment${NC}\n"
-docker-compose -f docker/demo/docker-compose.yaml down --rmi all --volumes;
 docker-compose -f "$DOCKER_ROOT"/docker-compose.yaml down --rmi all --volumes;
 docker image prune --force;
 printf "%b" "${OKG} ✓ ${NC} complete\n"
