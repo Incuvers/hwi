@@ -1,0 +1,4 @@
+# monitor files
+graft hwi 
+
+global-exclude *.py[co]
