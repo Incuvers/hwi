@@ -1,7 +1,7 @@
-# Monitor: IRIS Embedded Development
-![img](/doc/img/Incuvers-black.png)
+# Iris Hardware Interface
+![img](/docs/img/Incuvers-black.png)
 
-Updated: 2021-10
+Updated: 2021-11
 
 ## Navigation
 1. [Quickstart](#quickstart)
@@ -36,15 +36,6 @@ Where `<NAME>` is the name of the test case by its filename schema: `test_<NAME>
 make lint
 ```
 This target requires `yamllint` (all `.yaml` files), `shellcheck` (binaries located under `bin/`)and `flake8` (python app codebase) to be installed and in your `$PATH`. The `yamllint` and `flake8` configuration for monitor can be found in the [.yamllint](/.yamllint) and [.flake8](/.flake8) in root respectively.
-
-### Test CI Build Specs
-```bash
-make ci
-```
-This target will build a multipass container for both the linting and unittest suite jobs. The parameters for the containers can be edited in the [.env](/.env) file. This route is recommended for developing on non-Ubuntu platforms to ensure the features are conforment to the production environment and package dependancies.
-
-## Developers Guide
-Welcome to the team. Please see the [developers guide](./dev/README.md) for Incuvers guidelines and best practices.
 
 ## Development Team
 David Sean (CTO) (david@incuvers.com)\
