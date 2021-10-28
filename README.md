@@ -1,15 +1,33 @@
-# Monitor: IRIS Embedded Development
-![img](/doc/img/Incuvers-black.png)
+# IRIS Hardware Interface
+![img](/docs/img/Incuvers-black.png)
 
-Updated: 2021-10
+Updated: 2021-11
 
 ## Navigation
 1. [Quickstart](#quickstart)
-2. [Developers Guide](#developers-guide)
-3. [Development Team](#development-team)
+2. [Developer Team](#development-team)
+3. [Licence](#license)
 
 ## Quickstart
 This repository is built and controlled using the Makefile in the root in order to homogenize our dev environments. Run `make help` for more information on the available make targets.
+
+### Authentication
+Create a `.env` file from the sample env file
+```bash
+cp sample.env .env
+```
+
+### Docker Environment
+Build the services for local development. Local source code is mounted to the `hwi` container for rapid development:
+```bash
+make compose
+```
+
+### Python Module
+Or run the python module directly:
+```bash
+python3 -m hwi
+```
 
 ### Unittest and Coverage
 ```bash
@@ -31,21 +49,17 @@ make coverage case=<NAME>
 ```
 Where `<NAME>` is the name of the test case by its filename schema: `test_<NAME>.py`. For example the `<NAME>` of `test_cache.py` would be `cache`. A cli code coverage report will be generated displaying the coverage per file as well as the lines which have not been covered. The coverage configuration for monitor can be found in the [.coveragerc](/.coveragerc) in root.
 
-### Codebase Linting
+### Linting
 ```bash
 make lint
 ```
 This target requires `yamllint` (all `.yaml` files), `shellcheck` (binaries located under `bin/`)and `flake8` (python app codebase) to be installed and in your `$PATH`. The `yamllint` and `flake8` configuration for monitor can be found in the [.yamllint](/.yamllint) and [.flake8](/.flake8) in root respectively.
 
-### Test CI Build Specs
-```bash
-make ci
-```
-This target will build a multipass container for both the linting and unittest suite jobs. The parameters for the containers can be edited in the [.env](/.env) file. This route is recommended for developing on non-Ubuntu platforms to ensure the features are conforment to the production environment and package dependancies.
-
-## Developers Guide
-Welcome to the team. Please see the [developers guide](./dev/README.md) for Incuvers guidelines and best practices.
-
 ## Development Team
 David Sean (CTO) (david@incuvers.com)\
 Christian Sargusingh (christian@incuvers.com)
+
+## Licence
+Copyright © 2021 Incuvers Inc
+Unauthorized copying of this file, via any medium is strictly prohibited.
+Proprietary and confidential
