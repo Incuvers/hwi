@@ -28,7 +28,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: proxy/logs/ms.log
+    filename: hwi/logs/ms.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
@@ -36,7 +36,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: proxy/logs/rmq.log
+    filename: hwi/logs/rmq.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
@@ -44,7 +44,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: proxy/logs/icb.log
+    filename: hwi/logs/icb.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
@@ -52,7 +52,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: proxy/logs/alink.log
+    filename: hwi/logs/alink.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
