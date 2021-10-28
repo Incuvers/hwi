@@ -1,4 +1,4 @@
-# Iris Hardware Interface
+# IRIS Hardware Interface
 ![img](/docs/img/Incuvers-black.png)
 
 Updated: 2021-11
@@ -10,6 +10,24 @@ Updated: 2021-11
 
 ## Quickstart
 This repository is built and controlled using the Makefile in the root in order to homogenize our dev environments. Run `make help` for more information on the available make targets.
+
+### Authentication
+Create a `.env` file from the sample env file
+```bash
+cp sample.env .env
+```
+
+### Docker Environment
+Build the services for local development. Local source code is mounted to the `hwi` container for rapid development:
+```bash
+make compose
+```
+
+### Python Module
+Or run the python module directly:
+```bash
+python3 -m hwi
+```
 
 ### Unittest and Coverage
 ```bash
@@ -40,3 +58,8 @@ This target requires `yamllint` (all `.yaml` files), `shellcheck` (binaries loca
 ## Development Team
 David Sean (CTO) (david@incuvers.com)\
 Christian Sargusingh (christian@incuvers.com)
+
+## Licence
+Copyright © 2021 Incuvers Inc
+Unauthorized copying of this file, via any medium is strictly prohibited.
+Proprietary and confidential
