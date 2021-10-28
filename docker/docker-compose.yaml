@@ -4,7 +4,12 @@ services:
     container_name: rmq
     image: rabbitmq:3.9-management
     volumes:
-      - "rabbitmq/:/etc/rabbitmq/"
+      - "./rabbitmq/:/etc/rabbitmq/"
+    ports:
+      # expose for rmq web client
+      - "15672:15672"
+    networks:
+      - iris 
 
   hwi:
     container_name: hwi
@@ -16,5 +21,10 @@ services:
     volumes:
       - ../:/app
       - /sys:/sys
+    networks:
+      - iris 
     environment:
       - RABBITMQ_ADDR=rmq:5672
+
+networks:
+  iris:
