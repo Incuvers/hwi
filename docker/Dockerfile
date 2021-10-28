@@ -10,7 +10,6 @@ WORKDIR /app
 
 # add package dependancy indices
 COPY apt-packages.txt /app/apt-packages.txt
-COPY pre-requirements.txt /app/pre-requirements.txt
 COPY requirements.txt /app/requirements.txt
 
 # install dependancies
