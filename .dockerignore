@@ -1,0 +1,14 @@
+# root conf files
+.flake8
+hwi.code-workspace
+README.md
+.gitignore
+Makefile
+MANIFEST.in
+setup.py
+
+# directory ignores
+scripts/
+docs/
+.github/
+etc/
