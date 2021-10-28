@@ -1,0 +1,66 @@
+---
+version: 1
+disable_existing_loggers: false
+loggers:
+  hwi.alink:
+    level: 'DEBUG'
+    handlers: ['alinkHandler']
+    propagate: false
+  hwi.icb:
+    level: 'DEBUG'
+    handlers: ['icbHandler']
+    propagate: false
+  hwi.rmq:
+    level: 'DEBUG'
+    handlers: ['rmqHandler']
+    propagate: false
+  hwi.microscope:
+    level: 'DEBUG'
+    handlers: ['msHandler']
+    propagate: false
+  pika:
+    level: 'DEBUG'
+    handlers: ['rmqHandler']
+    propagate: false
+
+handlers:
+  msHandler:
+    level: 'DEBUG'
+    class: 'logging.handlers.RotatingFileHandler'
+    formatter: default
+    filename: proxy/logs/ms.log
+    mode: 'a'
+    maxBytes: 1000000
+    backupCount: 5
+  rmqHandler:
+    level: 'DEBUG'
+    class: 'logging.handlers.RotatingFileHandler'
+    formatter: default
+    filename: proxy/logs/rmq.log
+    mode: 'a'
+    maxBytes: 1000000
+    backupCount: 5
+  icbHandler:
+    level: 'DEBUG'
+    class: 'logging.handlers.RotatingFileHandler'
+    formatter: default
+    filename: proxy/logs/icb.log
+    mode: 'a'
+    maxBytes: 1000000
+    backupCount: 5
+  alinkHandler:
+    level: 'DEBUG'
+    class: 'logging.handlers.RotatingFileHandler'
+    formatter: default
+    filename: proxy/logs/alink.log
+    mode: 'a'
+    maxBytes: 1000000
+    backupCount: 5
+  consoleHandler:
+    level: 'DEBUG'
+    class: 'logging.StreamHandler'
+    formatter: default
+
+formatters:   # more commment
+  default:
+    format: '%(created)f %(threadName)s %(name)s line:%(lineno)d - %(levelname)s: %(message)s'
