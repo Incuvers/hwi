@@ -15,5 +15,6 @@ services:
       dockerfile: docker/Dockerfile
     volumes:
       - ../:/app
+      - /sys:/sys
     environment:
       - RABBITMQ_ADDR=rmq:5672
