@@ -16,4 +16,4 @@ services:
     volumes:
       - ../:/app
     environment:
-      - RABBITMQ_HOST=rmq
+      - RABBITMQ_ADDR=rmq:5672
