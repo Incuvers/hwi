@@ -5,8 +5,8 @@ Updated: 2021-11
 
 ## Navigation
 1. [Quickstart](#quickstart)
-2. [Developers Guide](#developers-guide)
-3. [Development Team](#development-team)
+2. [Developer Team](#development-team)
+3. [Licence](#license)
 
 ## Quickstart
 This repository is built and controlled using the Makefile in the root in order to homogenize our dev environments. Run `make help` for more information on the available make targets.
@@ -49,7 +49,7 @@ make coverage case=<NAME>
 ```
 Where `<NAME>` is the name of the test case by its filename schema: `test_<NAME>.py`. For example the `<NAME>` of `test_cache.py` would be `cache`. A cli code coverage report will be generated displaying the coverage per file as well as the lines which have not been covered. The coverage configuration for monitor can be found in the [.coveragerc](/.coveragerc) in root.
 
-### Codebase Linting
+### Linting
 ```bash
 make lint
 ```
