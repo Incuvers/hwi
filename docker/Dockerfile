@@ -16,7 +16,6 @@ COPY requirements.txt /app/requirements.txt
 RUN DEBIAN_FRONTEND=noninteractive TZ=America/New_York \
     xargs -a apt-packages.txt apt install \
     -y --no-install-recommends --fix-missing
-RUN python3 -m pip install --upgrade -r pre-requirements.txt --ignore-installed
 RUN python3 -m pip install -r requirements.txt
 
 # install tis from source
@@ -32,4 +31,4 @@ WORKDIR /app
 RUN rm -rfv tiscamera/
 
 
-CMD [ "./bin/monitor", "-d"]
+ENTRYPOINT [ "./docker/entry.sh" ]
