@@ -21,8 +21,8 @@ unit: ## execute monitor unittest suite, for single case make unit case=<NAME>
 lint: ## lint codebase using a combination of yamllint, shellcheck and flake8
 	@./scripts/lint.sh
 
-.PHONY: compose 
-compose: config ## Run development environment
+.PHONY: dev 
+dev: config ## Run development environment
 	@./scripts/compose.sh
 
 .PHONY: clean
