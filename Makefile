@@ -9,6 +9,18 @@ help: ## Print this help message and exit
 			printf "  %-30s %s\n", $$1, $$NF \
 		 }' $(MAKEFILE_LIST)
 
+.PHONY: coverage
+coverage: ## run code coverage report on module via unittest
+	@./scripts/coverage.sh ${case}
+
+.PHONY: unit
+unit: ## execute monitor unittest suite, for single case make unit case=<NAME>
+	@./scripts/unittest.sh ${case}
+
+.PHONY: lint
+lint: ## lint codebase using a combination of yamllint, shellcheck and flake8
+	@./scripts/lint.sh
+
 .PHONY: compose 
 compose: config ## Run development environment
 	@./scripts/compose.sh
