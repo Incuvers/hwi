@@ -37,23 +37,3 @@ jobs:
           touch .env
       - name: Run lint directive
         run: make lint
-  # pip:
-  #   name: pip package
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: [3.8]
-  #   steps:
-  #     - name: checkout
-  #       uses: actions/checkout@v2
-  #     - name: Set up Python ${{ matrix.python-version }}
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install monitor
-  #       run: |
-  #         sudo apt update
-  #         xargs -a apt-packages.txt sudo apt install -y
-  #         python3 -m pip install --upgrade -r pre-requirements.txt --ignore-installed
-  #         python3 -m pip install .
-  #         python3 -c 'import monitor; print(monitor.__version__)'
