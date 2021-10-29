@@ -1,4 +1,6 @@
 # IRIS Hardware Interface
+[![ci](https://github.com/Incuvers/hwi/actions/workflows/ci.yml/badge.svg)](https://github.com/Incuvers/hwi/actions/workflows/ci.yml)
+[![deploy](https://github.com/Incuvers/hwi/actions/workflows/image.yml/badge.svg)](https://github.com/Incuvers/hwi/actions/workflows/image.yml)
 ![img](/docs/img/Incuvers-black.png)
 
 Updated: 2021-11
