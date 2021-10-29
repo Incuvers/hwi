@@ -1,3 +1,4 @@
+---
 version: "2.9"
 services:
   rmq:
@@ -9,7 +10,7 @@ services:
       # expose for rmq web client
       - "15672:15672"
     networks:
-      - iris 
+      - iris
 
   hwi:
     container_name: hwi
@@ -22,7 +23,7 @@ services:
       - ../:/app
       - /sys:/sys
     networks:
-      - iris 
+      - iris
     environment:
       - RABBITMQ_ADDR=rmq:5672
 
