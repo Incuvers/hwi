@@ -9,6 +9,7 @@ import pika
 import json
 import time
 import logging
+from datetime import datetime
 
 
 class RMQClient:
@@ -28,8 +29,27 @@ class RMQClient:
         self._logger.info("Instantiated successfully")
 
     def publish(self):
-        body = json.dumps({"msg": "hello world"})
         while True:
+            body = json.dumps(
+                {
+                    "cmd": "test",
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            )
+            self.channel.basic_publish(
+                exchange='',
+                routing_key='test',
+                body=body
+            )
+            self._logger.info("Sent %s", body)
+            time.sleep(1)
+            body = json.dumps(
+                {
+                    "exp_id": -1,
+                    "tp": 45,
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            )
             self.channel.basic_publish(
                 exchange='',
                 routing_key='telemetry',
@@ -38,5 +58,4 @@ class RMQClient:
                     delivery_mode = 2, # make message persistent
                 )
             )
-            self._logger.info("Sent %s", body)
             time.sleep(1)
