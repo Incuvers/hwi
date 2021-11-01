@@ -30,4 +30,6 @@ RUN python3 -m pip install -r requirements.txt
 # WORKDIR /app
 # RUN rm -rfv tiscamera/
 
+COPY . .
+
 ENTRYPOINT [ "./docker/prod/entry.sh" ]
