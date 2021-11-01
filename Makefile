@@ -23,7 +23,7 @@ lint: ## lint codebase using a combination of yamllint, shellcheck and flake8
 
 .PHONY: dev 
 dev: config ## Run development environment
-	@./scripts/compose.sh
+	@./scripts/dev.sh
 
 .PHONY: clean
 clean: ## Clean docker environment
