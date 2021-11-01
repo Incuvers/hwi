@@ -30,5 +30,4 @@ RUN make && make install
 WORKDIR /app
 RUN rm -rfv tiscamera/
 
-
-ENTRYPOINT [ "./docker/entry.sh" ]
+ENTRYPOINT [ "./docker/prod/entry.sh" ]
