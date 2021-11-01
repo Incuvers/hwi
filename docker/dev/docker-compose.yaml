@@ -5,7 +5,7 @@ services:
     container_name: rmq
     image: rabbitmq:3.9-management
     volumes:
-      - "./rabbitmq/:/etc/rabbitmq/"
+      - "../rabbitmq/:/etc/rabbitmq/"
     ports:
       # expose for rmq web client
       - "15672:15672"
@@ -17,10 +17,10 @@ services:
     depends_on:
       - rmq
     build:
-      context: ../
-      dockerfile: docker/Dockerfile
+      context: ../../
+      dockerfile: docker/dev/Dockerfile
     volumes:
-      - ../:/app
+      - ../../:/app
       - /sys:/sys
     networks:
       - iris
