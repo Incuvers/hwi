@@ -1,4 +1,4 @@
-FROM arm64v8/ubuntu:latest
+FROM ubuntu:latest
 
 LABEL version="2.0"
 LABEL Christian Sargusingh "https://github.com/cSDes1gn"
