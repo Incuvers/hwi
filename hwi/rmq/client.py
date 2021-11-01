@@ -22,12 +22,21 @@ class RMQClient:
         )
         self.channel = connection.channel()
         self.channel.queue_declare(queue='test')
+        # create durable telemetry queue
+        self.channel.queue_declare(queue='telemetry', durable=True)
+        self._logger.info("Declared queues")
+        self._logger.info("Instantiated successfully")
 
     def publish(self):
         body = json.dumps({"msg": "hello world"})
         while True:
-            self.channel.basic_publish(exchange='',
-                                       routing_key='test',
-                                       body=body)
+            self.channel.basic_publish(
+                exchange='',
+                routing_key='telemetry',
+                body=body,
+                properties=pika.BasicProperties(
+                    delivery_mode = 2, # make message persistent
+                )
+            )
             self._logger.info("Sent %s", body)
             time.sleep(1)
