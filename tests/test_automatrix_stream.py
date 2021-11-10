@@ -16,7 +16,7 @@ Proprietary and confidential
 import unittest
 import numpy as np
 from unittest.mock import Mock, MagicMock, patch
-from monitor.microscope.automatrix.stream import AutomatrixStream
+from hwi.microscope.automatrix.stream import AutomatrixStream
 
 
 class TestAutomatrixStream(unittest.TestCase):
