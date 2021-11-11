@@ -6,7 +6,6 @@
 	],
 	"extensions": {
 		"recommendations": [
-		  "ms-vscode.cpptools",
 		  "yzhang.markdown-all-in-one",
 		  "ms-python.python",
 		  "visualstudioexptteam.vscodeintellicode",
