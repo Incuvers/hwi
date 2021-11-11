@@ -28,7 +28,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: hwi/logs/ms.log
+    filename: ${HWI_LOGS}/ms.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
@@ -36,7 +36,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: hwi/logs/rmq.log
+    filename: ${HWI_LOGS}/rmq.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
@@ -44,7 +44,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: hwi/logs/icb.log
+    filename: ${HWI_LOGS}/icb.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
@@ -52,7 +52,7 @@ handlers:
     level: 'DEBUG'
     class: 'logging.handlers.RotatingFileHandler'
     formatter: default
-    filename: hwi/logs/alink.log
+    filename: ${HWI_LOGS}/alink.log
     mode: 'a'
     maxBytes: 1000000
     backupCount: 5
