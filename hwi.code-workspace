@@ -11,6 +11,7 @@
 		  "ms-python.python",
 		  "visualstudioexptteam.vscodeintellicode",
 		  "ms-vscode-remote.remote-ssh",
+		  "ms-azuretools.vscode-docker",
 		  "eamodio.gitlens",
 		  "ms-python.vscode-pylance",
 		  "njpwerner.autodocstring",
