@@ -16,12 +16,12 @@ Unauthorized copying of this file, via any medium is strictly prohibited
 Proprietary and confidential
 """
 
-import imp
 import time
 import logging
 import unittest
 from unittest.mock import MagicMock, patch, Mock
-from monitor.microscope.fluorescence.hardware import FluorescenceHardware
+from hwi.microscope.fluorescence.hardware import FluorescenceHardware
+from hwi.microscope.fluorescence.fluorescence import Fluorescence
 
 
 class TestFluorescence(unittest.TestCase):
@@ -32,20 +32,8 @@ class TestFluorescence(unittest.TestCase):
         }
         self.module_patcher = patch.dict('sys.modules', mocked_modules)
         self.module_patcher.start()
-        from monitor.microscope.fluorescence import fluorescence  # noqa
-
-        def kill_patches():  # Create a cleanup callback that undoes our patches
-            patch.stopall()  # Stops all patches started with start()
-            imp.reload(fluorescence)  # Reload our mqtt module which restores the original decorator
-        # We want to make sure this is run so we do this in addCleanup instead of tearDown
-        self.addCleanup(kill_patches)
-        # Now patch the decorator where the decorator is being imported from
-        # The lambda makes our decorator into a pass-thru. Also, don't forget to call start()
-        patch('monitor.environment.thread_manager.ThreadManager.threaded',
-              lambda *x, **y: lambda f: f).start()
-        imp.reload(fluorescence)  # Reloads the module which applies our patched decorator
         logging.disable()
-        self.fluo = fluorescence.Fluorescence()
+        self.fluo = Fluorescence()
 
     def tearDown(self):
         del self.fluo

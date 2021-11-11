@@ -10,8 +10,8 @@ on:
       - master
 
 jobs:
-  unittest:
-    name: unittest suite
+  coverage:
+    name: code coverage
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
@@ -19,12 +19,13 @@ jobs:
       - name: Install dependancies
         run: |
           sudo apt update
-          sudo apt install git
           xargs -a apt-packages.txt sudo apt install -y
+          python3 -m pip install -r tests/requirements.txt
           python3 -m pip install -r requirements.txt
-          ./scripts/tis-install.sh
-      - name: Run unittest suite
+      - name: Run tests and collect coverage
         run: make unit
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
   lint:
     name: lint suite
     runs-on: ubuntu-latest
@@ -37,3 +38,22 @@ jobs:
           touch .env
       - name: Run lint directive
         run: make lint
+  pip:
+    name: pip package
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install hwi
+        run: |
+          sudo apt update
+          xargs -a apt-packages.txt sudo apt install -y
+          python3 -m pip install .
+          python3 -c 'import hwi; print(hwi.__version__)'

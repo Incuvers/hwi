@@ -16,9 +16,9 @@ handler () {
 printf "%b" "${OKB}Executing unittest suite${NC}\n"
 # execute case unittests or entire suite
 if [ -z "$1" ]; then
-    python3 -m unittest discover -v -s hwi/tests
+    nosetests 
 else
-    python3 -m unittest -v hwi/tests/test_"$1".py
+    nosetests test_"$1".py
 fi
 
 printf "%b" "${OKG} ✓ ${NC} Pass\n"

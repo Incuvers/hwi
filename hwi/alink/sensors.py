@@ -26,14 +26,12 @@ import binascii
 from typing import Dict, Union
 from threading import Condition
 
-from monitor.models.icb import ICB
-from monitor.events.registry import Registry as events
-from monitor.environment.state_manager import StateManager
-from monitor.environment.thread_manager import ThreadManager as tm
+from hwi.models.icb import ICB
 
 
 class Sensors:
 
+    CONVERSION_RESOLUTION = 2
     SETPOINT_TIMEOUT = 5    # setpoint timeout
     CC_TIMEOUT = 10         # CO2 calibration timeout
 
@@ -45,14 +43,7 @@ class Sensors:
         # set verbosity=1 to view more
         self.verbosity = 1
         self.buffer = {}
-        # register events
-        events.co2_calibration.register(self.send_co2_calibration_time)
-        events.aux_duty.register(self.queue_buffer)
-        events.op_mode.register(self.queue_buffer)
-        events.fan_duty.register(self.queue_buffer)
         # subscribe isv
-        with StateManager() as state:
-            state.subscribe_isv(ICB, self.validator)
         try:
             self.serial_connection = serial.Serial(
                 port=serial_port,
@@ -70,7 +61,6 @@ class Sensors:
             self.serial_connection = None
         self._logger.info("Instantiation successful.")
 
-    @tm.threaded(daemon=True)
     def monitor(self) -> None:
         """
         ICB runtime interface loop. Processes sensorframe and request buffer values.
@@ -97,7 +87,6 @@ class Sensors:
             # DO NOT REMOVE (used for unittest mocking)
             time.sleep(0.1)
 
-    @tm.lock(tm.arduino_lock)
     def serial_interface(self) -> str:
         """
         Send pending command strings and read a new sensorframe line
@@ -191,31 +180,6 @@ class Sensors:
         :param sensorframe: sensorframe dict
         :type sensorframe: dict
         """
-        with StateManager() as state:
-            icb = state.icb
-            payload = {
-                "tp": icb.int_to_float(sensorframe['TP']),
-                "tc": icb.int_to_float(sensorframe['TC']),
-                "cp": icb.int_to_float(sensorframe['CP']),
-                "cc": icb.int_to_float(sensorframe['CC']),
-                "op": icb.int_to_float(sensorframe['OP']),
-                "oc": icb.int_to_float(sensorframe['OC']),
-                "rh": icb.int_to_float(sensorframe['RH']),
-                "fp": sensorframe['FP'],
-                "fc": sensorframe['FC'],
-                "hp": sensorframe['HP'],
-                "tm": sensorframe['TM'],
-                "cm": sensorframe['CM'],
-                "om": sensorframe['OM'],
-                "ctr": sensorframe['CTR'],
-                "iv": sensorframe['IV'],
-                "to": sensorframe['TO'],
-                "ct": icb.calibration_time_to_iso(sensorframe['CT']),
-                "timestamp": icb.generate_timestamp()
-            }
-            icb.setattrs(**payload)
-            # do not trigger validators
-            state.commit(icb, source=True)
 
     def _update_accepted_sensorframe(self, int_sensorframe: dict) -> None:
         """
@@ -247,68 +211,6 @@ class Sensors:
             with self._setpoint_condition:
                 self._setpoint_condition.notify_all()
 
-    def validator(self, candidate: ICB) -> bool:
-        """
-        Validate proposed setpoint changes
-
-        :param candidate: proposed setpoint changes
-        :type candidate: ICB
-        :return: validation result
-        :rtype: bool
-        """
-        # compare deltas against current state
-        with StateManager() as state:
-            icb = state.icb
-            tp = icb.tp
-            cp = icb.cp
-            op = icb.op
-            hp = icb.hp
-            fp = icb.fp
-            tm = icb.tm
-            om = icb.om
-            cm = icb.cm
-        # check for co2 delta
-        if cp != candidate.cp or cm != candidate.cm:
-            state = False
-            # check if setpoint delta
-            if cp != candidate.cp:
-                self.queue_buffer('CP', candidate.float_to_int(candidate.cp))
-            if cm != candidate.cm:
-                self.queue_buffer('CM', candidate.cm)
-                state = True
-            # trigger appropriate gauge loading view depending on state/setpoint outcome
-            events.co2_loader.trigger(state)
-        # check for o2 delta
-        if op != candidate.op or om != candidate.om:
-            state = False
-            # check if setpoint delta
-            if op != candidate.op:
-                self.queue_buffer('OP', candidate.float_to_int(candidate.op))
-            if om != candidate.om:
-                self.queue_buffer('OM', candidate.om)
-                state = True
-            # trigger appropriate gauge loading view depending on state/setpoint outcome
-            events.o2_loader.trigger(state)
-        # check for temp delta
-        if tp != candidate.tp or tm != candidate.tm:
-            state = False
-            # check if setpoint delta
-            if tp != candidate.tp:
-                self.queue_buffer('TP', candidate.float_to_int(candidate.tp))
-            if tm != candidate.tm:
-                self.queue_buffer('TM', candidate.tm)
-                state = True
-            # trigger appropriate gauge loading view depending on state/setpoint outcome
-            events.temp_loader.trigger(state)
-        if fp != candidate.fp:
-            self.queue_buffer('FP', candidate.fp)
-        if hp != candidate.hp:
-            self.queue_buffer('HP', candidate.hp)
-        # block until setpoint condition is triggered
-        with self._setpoint_condition:
-            result = self._setpoint_condition.wait(timeout=self.SETPOINT_TIMEOUT)
-        return result
-
     def queue_buffer(self, param: str, value: Union[float, int]) -> None:
         """
         Adds a parameter to the update queue, the updates will be sent
@@ -336,9 +238,7 @@ class Sensors:
         """
         self._logger.debug("Updating co2 caibration timestamp")
         # checkout icb to access conversion functions
-        with StateManager() as state:
-            icb = state.icb
-        self.queue_buffer('CT', icb.generate_co2_calibration_time())
+        self.queue_buffer('CT', ICB.generate_co2_calibration_time())
         # add polling backoff to validate the calibration time has been accepted by the arduino
         with self._cc_condition:
             result = self._cc_condition.wait(timeout=self.CC_TIMEOUT)
@@ -370,7 +270,6 @@ class Sensors:
         command_string = str(cs_length) + "~" + crc_str + "$" + command_string + "\n"
         return command_string
 
-
 # class FlashService:
 
 #     def __init__(self):
@@ -385,7 +284,7 @@ class Sensors:
 #     def flash_device(self):
 #         """
 #         flash the device with the provided hex file provided in the constructor
-#         :return: status code generated by compile and flash process if the code is not 0 the flash 
+#         :return: status code generated by compile and flash process if the code is not 0 the flash
 #         was not successful
 #         """
 #         cmd_string = f'avrdude -v -p atmega2560 -cwiring -C {self._avrdude_conf_file} -P /dev/ttyUSB0 -b 115200 -D -U\

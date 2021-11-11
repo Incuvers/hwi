@@ -3,3 +3,7 @@ __pycache__
 .env
 *.log.*
 *.log
+
+# exclude coverage generated files
+tests/*.xml
+.coverage
