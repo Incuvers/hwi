@@ -10,7 +10,7 @@ services:
       # expose for rmq web client
       - "15672:15672"
     networks:
-      - iris
+      - amqp
 
   hwi:
     container_name: hwi
@@ -23,10 +23,11 @@ services:
       - ../../:/app
       - /sys:/sys
     networks:
-      - iris
+      - amqp
     environment:
       - RABBITMQ_ADDR=rmq:5672
-      - HWI_LOGS=/app/hwi/logs
+      - HWI_LOGS=/app/instance/logs
+      - HWI_CERTS=/app/instance/certs
 
 networks:
-  iris:
+  amqp:
