@@ -26,6 +26,7 @@ services:
       - iris
     environment:
       - RABBITMQ_ADDR=rmq:5672
+      - HWI_LOGS=/app/hwi/logs
 
 networks:
   iris:
