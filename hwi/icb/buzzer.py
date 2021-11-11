@@ -29,9 +29,3 @@ class Buzzer:
 
     def off(self):
         wiringpi.digitalWrite(self.pin, 0)
-
-
-if __name__ == "__main__":
-    buzzer = Buzzer()
-    buzzer.beep()
-    buzzer.off()

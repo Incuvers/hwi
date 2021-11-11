@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Fluorescence
@@ -23,8 +22,7 @@ import time
 import wiringpi  # type:ignore
 import logging
 
-from monitor.environment.thread_manager import ThreadManager as tm
-from monitor.microscope.fluorescence.hardware import FluorescenceHardware
+from hwi.microscope.fluorescence.hardware import FluorescenceHardware
 
 
 class Fluorescence:
@@ -52,7 +50,6 @@ class Fluorescence:
         wiringpi.pinMode(FluorescenceHardware.TRIGGER, wiringpi.OUTPUT)
         self.initialized = True
 
-    @tm.threaded(daemon=True)
     def watchdog_timer(self) -> None:
         """
         Internal counter to circumvent LED overhead. This timer unconditionally cascades into the

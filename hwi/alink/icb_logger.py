@@ -3,8 +3,6 @@ import time
 import serial
 import logging
 
-from monitor.environment.thread_manager import ThreadManager as tm
-
 
 class ICBLogger:
     def __init__(self, serial_port: str) -> None:
@@ -26,7 +24,6 @@ class ICBLogger:
             self.serial_connection = None
         self._logger.info("Instantiation successful.")
 
-    @tm.threaded(daemon=True)
     def start(self) -> None:
         """
         Logging loop loop. Process serial data as logging calls.
