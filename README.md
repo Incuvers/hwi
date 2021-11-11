@@ -11,7 +11,15 @@ Updated: 2021-11
 3. [Licence](#license)
 
 ## Quickstart
-This repository is built and controlled using the Makefile in the root in order to homogenize our dev environments. Run `make help` for more information on the available make targets.
+This repository is built and controlled using the Makefile in the root in order to homogenize our dev environments. Run `make help` for more information on the available make targets. The source is intended to be built and developed on Ubuntu 20.04 or higher ARM64 systems.
+
+Install `docker`, `docker-compose` and setup user permissions
+```bash
+sudo apt install docker.io docker-compose
+sudo groupadd docker
+sudo usermod -aG docker $USER
+sudo reboot
+```
 
 ### Authentication
 Create a `.env` file from the sample env file
@@ -22,7 +30,7 @@ cp sample.env .env
 ### Docker Environment
 Build the services for local development. Local source code is mounted to the `hwi` container for rapid development:
 ```bash
-make compose
+make dev
 ```
 
 ### Python Module
