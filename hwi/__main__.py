@@ -7,12 +7,14 @@ Modified: 2021-10
 Copyright © 2021 Incuvers. All rights reserved.
 """
 
+import sys
 import os
 import logging
 import logging.config
 import coloredlogs
 from pathlib import Path
 from envyaml import EnvYAML
+from configparser import ConfigParser
 
 from hwi.logs.formatter import pformat
 from hwi.rmq.client import RMQClient
@@ -54,9 +56,32 @@ def logging_handler(config_path: Path, base_path: str) -> None:
         logging.info("Logging configuration successful.")
 
 
+def device_certs_handler(base_path: str) -> None:
+    """
+    Read device certs and export as environment variables for global access. 
+    If device certs are missing exit with error code 2
+
+    :param base_path: device certs base path
+    :type base_path: str
+    """
+    if not os.path.exists(base_path + '/amqp.ini') or \
+            not os.path.exists(base_path + '/device.ini'):
+        logging.critical("Failed to identify device certs.")
+        sys.exit(2)
+    # instantiate
+    config = ConfigParser()
+    config.read(base_path + '/amqp.ini')
+    os.environ['AMQP_USER'] = config.get('amqp', 'user')
+    os.environ['AMQP_PASS'] = config.get('amqp', 'password')
+
+
 logging_handler(
-    config_path=Path(__file__).parent.joinpath("logs/config/config.yml"),
+    config_path=Path(__file__).parent.joinpath("logs/config/config.yaml"),
     base_path=os.environ.get("HWI_LOGS", str(Path(__file__).parent.joinpath('logs/')))
+)
+device_certs_handler(
+    base_path=os.environ.get("HWI_CERTS", str(
+        Path(__file__).parent.parent.joinpath('instance/certs')))
 )
 
 _log = logging.getLogger(__name__)
