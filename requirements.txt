@@ -7,3 +7,4 @@ pip
 numpy>=1.21.3
 PyYAML>=5.4
 coloredlogs>=15.0.1
+envyaml>=1.9.210927
