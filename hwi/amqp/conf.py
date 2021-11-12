@@ -1,0 +1,3 @@
+
+class AMQPConf:
+    EXCHANGE = 'device'
