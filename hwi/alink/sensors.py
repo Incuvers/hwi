@@ -27,6 +27,7 @@ from typing import Dict, Union
 from threading import Condition
 
 from hwi.models.icb import ICB
+from hwi.events.registry import Registry as events
 
 
 class Sensors:
@@ -81,7 +82,9 @@ class Sensors:
                     else:
                         # validate kvp against buffer
                         self._update_accepted_sensorframe(sensorframe)
-                        self._update_state(sensorframe)
+                        telemetry = ICB()
+                        telemetry.deserialize(**sensorframe)
+                        events.amqp_publish.trigger('telemetry', telemetry.serialize())
             # report request buffer
             self._logger.info("Request Buffer: %s", self.buffer)
             # DO NOT REMOVE (used for unittest mocking)
@@ -172,14 +175,6 @@ class Sensors:
             elif icb_key == 'IV':
                 sensorframe[icb_key] = icb_value
         return sensorframe
-
-    def _update_state(self, sensorframe: dict) -> None:
-        """
-        Convert sensorframe dict to system state change
-
-        :param sensorframe: sensorframe dict
-        :type sensorframe: dict
-        """
 
     def _update_accepted_sensorframe(self, int_sensorframe: dict) -> None:
         """
