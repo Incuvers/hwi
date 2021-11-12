@@ -17,7 +17,8 @@ from envyaml import EnvYAML
 from configparser import ConfigParser
 
 from hwi.logs.formatter import pformat
-from hwi.rmq.client import RMQClient
+from hwi.amqp.client import AMQPClient
+from hwi.alink.sensors import Sensors
 
 
 def logging_handler(config_path: Path, base_path: str) -> None:
@@ -64,8 +65,7 @@ def device_certs_handler(base_path: str) -> None:
     :param base_path: device certs base path
     :type base_path: str
     """
-    if not os.path.exists(base_path + '/amqp.ini') or \
-            not os.path.exists(base_path + '/device.ini'):
+    if not os.path.exists(base_path + '/amqp.ini'):
         logging.critical("Failed to identify device certs.")
         sys.exit(2)
     # instantiate
@@ -74,6 +74,12 @@ def device_certs_handler(base_path: str) -> None:
     os.environ['AMQP_USER'] = config.get('amqp', 'user')
     os.environ['AMQP_PASS'] = config.get('amqp', 'password')
 
+
+_log = logging.getLogger(__name__)
+coloredlogs.install(level="DEBUG", logger=_log)
+
+_log.info("HWI Logs: %s", os.environ.get("HWI_LOGS"))
+_log.info("HWI Certs: %s", os.environ.get("HWI_CERTS"))
 
 logging_handler(
     config_path=Path(__file__).parent.joinpath("logs/config/config.yaml"),
@@ -84,12 +90,12 @@ device_certs_handler(
         Path(__file__).parent.parent.joinpath('instance/certs')))
 )
 
-_log = logging.getLogger(__name__)
-coloredlogs.install(level="DEBUG", logger=_log)
 
 # RMQ Event config
 host = os.environ['RABBITMQ_ADDR'].split(':')[0]
 port = int(os.environ['RABBITMQ_ADDR'].split(':')[1])
 
-rmq_client = RMQClient(host, port)
-rmq_client.publish()
+client = AMQPClient(host, port)
+client.connect()
+alink = Sensors(serial_port=os.environ.get('HWI_SERIAL', '/dev/ttyUSB0'))
+alink.monitor()
