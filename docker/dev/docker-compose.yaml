@@ -20,6 +20,8 @@ services:
     volumes:
       - ../../:/app
       - /sys:/sys
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
     networks:
       - amqp
     environment:
