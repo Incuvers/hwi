@@ -24,6 +24,7 @@ services:
       - amqp
     environment:
       - RABBITMQ_ADDR=rmq:5672
+      - HWI_SERIAL=/dev/ttyUSB0
       - HWI_LOGS=/app/instance/logs
       - HWI_CERTS=/app/instance/certs
 
