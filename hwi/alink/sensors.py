@@ -28,6 +28,7 @@ from threading import Condition
 
 from hwi.models.icb import ICB
 from hwi.events.registry import Registry as events
+from hwi.sys.tm import ThreadManager as tm
 
 
 class Sensors:
@@ -72,6 +73,7 @@ class Sensors:
             except (serial.SerialTimeoutException, serial.SerialException) as exc:
                 self._logger.exception("Arduino connection lost: %s", exc)
             else:
+                self._logger.debug("Line: %s", line)
                 # validate the sensorframe checksum
                 if self._validate_checksum(line):
                     # parse arduino message
@@ -90,6 +92,7 @@ class Sensors:
             # DO NOT REMOVE (used for unittest mocking)
             time.sleep(0.1)
 
+    @tm.lock(tm.arduino_lock)
     def serial_interface(self) -> str:
         """
         Send pending command strings and read a new sensorframe line
