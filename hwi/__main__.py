@@ -8,6 +8,7 @@ Copyright © 2021 Incuvers. All rights reserved.
 """
 
 import sys
+import time
 import os
 import logging
 import logging.config
@@ -96,6 +97,8 @@ host = os.environ['RABBITMQ_ADDR'].split(':')[0]
 port = int(os.environ['RABBITMQ_ADDR'].split(':')[1])
 
 client = AMQPClient(host, port)
+time.sleep(5)
 client.connect()
 alink = Sensors(serial_port=os.environ.get('HWI_SERIAL', '/dev/ttyUSB0'))
+time.sleep(5)
 alink.monitor()
