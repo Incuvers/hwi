@@ -9,7 +9,20 @@ services:
       - "15672:15672"
     networks:
       - amqp
-
+      - loki
+  grafana:
+    image: ghcr.io/incuvers/grafana:latest
+    container_name: grafana
+    # restart: always
+    user: "1000"
+    ports:
+      - "3000:3000"
+    # volumes:
+    #   # define persistant volumes
+    #   - ~/.grafana/data:/var/lib/grafana
+    #   - ~/.grafana/provisioning:/etc/grafana/provisioning 
+    networks:
+      - loki
   hwi:
     container_name: hwi
     depends_on:
@@ -32,3 +45,4 @@ services:
 
 networks:
   amqp:
+  loki:
