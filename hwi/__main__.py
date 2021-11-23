@@ -46,7 +46,7 @@ def logging_handler(config_path: Path, base_path: str) -> None:
         # load config from .yaml
         env = EnvYAML(config_path).export()
         logging.info("Parsed logger config:%s", pformat(env))
-        logging.config.dictConfig(env)
+        logging.config.dictConfig(env) # type: ignore
         logging.info('Configuring logger using dict config')
     except ValueError as exc:
         logging.exception(

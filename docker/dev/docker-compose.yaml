@@ -11,16 +11,17 @@ services:
       - amqp
       - loki
   grafana:
-    image: ghcr.io/incuvers/grafana:latest
+    image: ghcr.io/incuvers/grafana:arm64
     container_name: grafana
-    # restart: always
-    user: "1000"
+    restart: always
     ports:
       - "3000:3000"
-    # volumes:
-    #   # define persistant volumes
-    #   - ~/.grafana/data:/var/lib/grafana
-    #   - ~/.grafana/provisioning:/etc/grafana/provisioning 
+    networks:
+      - loki
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: always
     networks:
       - loki
   hwi:
@@ -37,11 +38,13 @@ services:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
     networks:
       - amqp
+      - loki
     environment:
       - RABBITMQ_ADDR=rmq:5672
       - HWI_SERIAL=/dev/ttyUSB0
       - HWI_LOGS=/app/instance/logs
       - HWI_CERTS=/app/instance/certs
+      - LOKI_ENDPOINT="http://loki:3100/loki/api/v1/push"
 
 networks:
   amqp:
