@@ -2,70 +2,55 @@
 version: 1
 disable_existing_loggers: false
 loggers:
+  __main__:
+    level: "DEBUG"
+    handlers: ["loki_handler", "file_handler"]
   hwi.alink:
-    level: 'DEBUG'
-    handlers: ['consoleHandler']
+    level: "DEBUG"
+    handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.icb:
-    level: 'DEBUG'
-    handlers: ['consoleHandler']
+    level: "DEBUG"
+    handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.rmq:
-    level: 'DEBUG'
-    handlers: ['consoleHandler']
+    level: "DEBUG"
+    handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.microscope:
-    level: 'DEBUG'
-    handlers: ['consoleHandler']
+    level: "DEBUG"
+    handlers: ["loki_handler", "file_handler"]
     propagate: false
   pika:
-    level: 'DEBUG'
-    handlers: ['consoleHandler']
+    level: "DEBUG"
+    handlers: ["loki_handler", "file_handler"]
     propagate: false
 
 handlers:
-  # msHandler:
-  #   level: 'DEBUG'
-  #   class: 'logging_loki.LokiHandler'
-  #   formatter: default
-  #   filename: ${HWI_LOGS}/ms.log
-  #   mode: 'a'
-  #   maxBytes: 1000000
-  #   backupCount: 5
-  # rmqHandler:
-  #   level: 'DEBUG'
-  #   class: 'logging.handlers.RotatingFileHandler'
-  #   formatter: default
-  #   filename: ${HWI_LOGS}/rmq.log
-  #   mode: 'a'
-  #   maxBytes: 1000000
-  #   backupCount: 5
-  # icbHandler:
-  #   level: 'DEBUG'
-  #   class: 'logging.handlers.RotatingFileHandler'
-  #   formatter: default
-  #   filename: ${HWI_LOGS}/icb.log
-  #   mode: 'a'
-  #   maxBytes: 1000000
-  #   backupCount: 5
-  # alinkHandler:
-  #   level: 'DEBUG'
-  #   class: 'logging.handlers.RotatingFileHandler'
-  #   formatter: default
-  #   filename: ${HWI_LOGS}/alink.log
-  #   mode: 'a'
-  #   maxBytes: 1000000
-  #   backupCount: 5
-  consoleHandler:
-    level: 'DEBUG'
-    class: 'logging_loki.LokiHandler'
-    url: 'http://grafana:3000/loki/api/v1/push'
-    version: "1"
-    # auth: [ "admin", "incuvers" ]
+  file_handler:
+    level: "DEBUG"
+    class: "logging.handlers.RotatingFileHandler"
+    formatter: default
+    filename: ${HWI_LOGS}/hwi.log
+    mode: "a"
+    maxBytes: 1000000
+    backupCount: 10
+  loki_handler:
+    level: "DEBUG"
+    class: "logging_loki.LokiHandler"
+    url: ${LOKI_ENDPOINT}
     tags:
-      application: hwi
+      service: "hwi"
+    version: "1"
+    formatter: epoch
+  console_handler:
+    class: "logging.StreamHandler"
     formatter: default
 
-formatters:   # more commment
+formatters:
   default:
-    format: '%(created)f %(threadName)s %(name)s line:%(lineno)d - %(levelname)s: %(message)s'
+    format: "%(created)f %(threadName)s %(name)s line:%(lineno)d - %(levelname)s: %(message)s"
+  epoch:
+    format: "%(created)f %(threadName)s %(name)s %(lineno)d - %(levelname)s: %(message)s"
+  simple:
+    format: "%(name)s %(lineno)d - %(levelname)s: %(message)s"
