@@ -32,8 +32,8 @@ services:
       - "3000:3000"
     networks:
       - monitor
-    labels:
-      org.label-schema.group: "monitoring"
+    # labels:
+    #   org.label-schema.group: "monitoring"
   loki:
     image: grafana/loki:latest
     container_name: loki
@@ -59,8 +59,8 @@ services:
       - 9100
     networks:
       - monitor
-    labels:
-      org.label-schema.group: "monitoring"
+    # labels:
+    #   org.label-schema.group: "monitoring"
   cadvisor:
     image: braingamer/cadvisor-arm:latest
     container_name: cadvisor
@@ -78,8 +78,8 @@ services:
       - 8080
     networks:
       - monitor
-    labels:
-      org.label-schema.group: "monitoring"
+    # labels:
+    #   org.label-schema.group: "monitoring"
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -98,8 +98,8 @@ services:
       - 9090
     networks:
       - monitor
-    labels:
-      org.label-schema.group: "monitoring"
+    # labels:
+    #   org.label-schema.group: "monitoring"
   hwi:
     container_name: hwi
     depends_on:
