@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 ICB Model
@@ -10,11 +9,25 @@ Unauthorized copying of this file, via any medium is strictly prohibited
 Proprietary and confidential
 """
 
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Union
 from datetime import datetime, timezone
 from uuid import uuid4
+from enum import IntEnum
 from hwi.logs.formatter import pformat
 from hwi.models.state import StateModel
+
+Sensorframe = Dict[str, Union[str, float, int]]
+
+
+class SensorMode(IntEnum):
+    """
+    0: off
+    1: read-only
+    2: active
+    """
+    OFF = 0
+    READ = 1
+    ACTIVE = 2
 
 
 class ICB(StateModel):
@@ -37,24 +50,8 @@ class ICB(StateModel):
         super().__init__(
             _id='',
         )
-        self._tc_set = False
-        self._rh_set = False
-        self._oc_set = False
-        self._cc_set = False
-        self._tp_set = False
-        self._to_set = False
-        self._cp_set = False
-        self._op_set = False
-        self._hp_set = False
-        self._fp_set = False
-        self._fc_set = False
-        self._ctr_set = False
-        self._tm_set = False
-        self._cm_set = False
-        self._om_set = False
-        self._iv_set = False
-        self._ct_set = False
-        self._timestamp_set = False
+        # set creation timestamp
+        self.timestamp = self.generate_timestamp()
 
     def __repr__(self) -> str:
         return "ICB: {}".format(pformat(self.serialize()))
@@ -67,62 +64,49 @@ class ICB(StateModel):
         """
         return {
             'id': self.id,
-            'TC': self.tc,
-            'CC': self.cc,
-            'OC': self.oc,
-            'RH': self.rh,
-            'TP': self.tp,
-            'CP': self.cp,
-            'OP': self.op,
-            'TO': self.to,
-            'CT': self.ct,
-            'CTR': self.ctr,
-            'TM': self.tm,
-            'FP': self.fp,
-            'FC': self.fc,
-            'HP': self.hp,
-            'CM': self.cm,
-            'OM': self.om,
-            'IV': self.iv,
+            'tc': self.tc,
+            'cc': self.cc,
+            'oc': self.oc,
+            'rh': self.rh,
+            'tp': self.tp,
+            'cp': self.cp,
+            'op': self.op,
+            'to': self.to,
+            'ct': self.ct,
+            'ctr': self.ctr,
+            'tm': self.tm,
+            'fp': self.fp,
+            'fc': self.fc,
+            'hp': self.hp,
+            'hc': self.hc,
+            'cm': self.cm,
+            'om': self.om,
+            'iv': self.iv,
             'timestamp': self.timestamp,
         }
 
-    def deserialize(self, **kwargs) -> None:
+    def deserialize(self, payload: Sensorframe) -> None:
         """
-        Iteratively set object properties
+        Perform value conversions and set property
         """
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-
-    @property
-    def initialized(self) -> bool:
-        """
-        Check if all properties have been initialized successfully
-        :return: sensorframe init status
-        :rtype: bool
-        """
-        return all(
-            [
-                self._tc_set,
-                self._rh_set,
-                self._oc_set,
-                self._cc_set,
-                self._tp_set,
-                self._to_set,
-                self._cp_set,
-                self._op_set,
-                self._hp_set,
-                self._fp_set,
-                self._fc_set,
-                self._ctr_set,
-                self._tm_set,
-                self._cm_set,
-                self._om_set,
-                self._iv_set,
-                self._ct_set,
-                self._timestamp_set,
-            ]
-        )
+        self.tp = self.int_to_float(int(payload.get('TP', 0)))
+        self.tc = self.int_to_float(int(payload.get('TC', 0)))
+        self.op = self.int_to_float(int(payload.get('OP', 0)))
+        self.oc = self.int_to_float(int(payload.get('OC', 0)))
+        self.cp = self.int_to_float(int(payload.get('CP', 0)))
+        self.cc = self.int_to_float(int(payload.get('CP', 0)))
+        self.rh = self.int_to_float(int(payload.get('RH', 0)))
+        self.to = self.int_to_float(int(payload.get('TO', 0)))
+        self.cm = SensorMode(int(payload.get('CM', 0)))
+        self.tm = SensorMode(int(payload.get('TM', 0)))
+        self.om = SensorMode(int(payload.get('OM', 0)))
+        self.ct = self.calibration_time_to_iso(int(payload.get('CT', 0)))
+        self.hc = bool(payload.get('HC', 0))
+        self.ctr = float(payload.get('CTR', 0.0))
+        self.iv = str(payload.get('IV', ""))
+        self.hp = int(payload.get('HP', 0))
+        self.fc = int(payload.get('FC', 0))
+        self.fp = int(payload.get('FP', 0))
 
     @property
     def tc(self) -> float:
@@ -144,7 +128,6 @@ class ICB(StateModel):
         # range validation
         if self.OPERATING_TEMPERATURE[0] <= candidate <= self.OPERATING_TEMPERATURE[1]:
             self.__tc = candidate
-            self._tc_set = True
 
     @property
     def rh(self) -> float:
@@ -166,7 +149,6 @@ class ICB(StateModel):
         # range validation
         if 0.0 <= candidate <= 100.0:
             self.__rh = candidate
-            self._rh_set = True
 
     @property
     def oc(self) -> float:
@@ -188,7 +170,6 @@ class ICB(StateModel):
         # range validation
         if 0.0 <= candidate <= 100.0:
             self.__oc = candidate
-            self._oc_set = True
 
     @property
     def cc(self) -> float:
@@ -210,7 +191,6 @@ class ICB(StateModel):
         # range validation
         if 0.0 <= candidate <= 100.0:
             self.__cc = candidate
-            self._cc_set = True
 
     @property
     def tp(self) -> float:
@@ -232,7 +212,6 @@ class ICB(StateModel):
         # range validation
         if self.TP_RANGE[0] <= candidate <= self.TP_RANGE[1]:
             self.__tp = candidate
-            self._tp_set = True
 
     @property
     def to(self) -> float:
@@ -252,7 +231,6 @@ class ICB(StateModel):
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
         self.__to = candidate
-        self._to_set = True
 
     @property
     def cp(self) -> float:
@@ -274,7 +252,6 @@ class ICB(StateModel):
         # range validation
         if self.CP_RANGE[0] <= candidate <= self.CP_RANGE[1]:
             self.__cp = candidate
-            self._cp_set = True
 
     @property
     def op(self) -> float:
@@ -296,7 +273,6 @@ class ICB(StateModel):
         # range validation
         if self.OP_RANGE[0] <= candidate <= self.OP_RANGE[1]:
             self.__op = candidate
-            self._op_set = True
 
     @property
     def hp(self) -> int:
@@ -316,7 +292,24 @@ class ICB(StateModel):
         """
         if 0 <= hp <= 100:
             self.__hp = hp
-            self._hp_set = True
+
+    @property
+    def hc(self) -> bool:
+        """
+        Get heater status
+        :return: heater status
+        :rtype: bool
+        """
+        return self.__hc
+
+    @hc.setter
+    def hc(self, hc: bool) -> None:
+        """
+        Set heater status
+        :param hc: heater status
+        :type hc: bool
+        """
+        self.__hc = hc
 
     @property
     def fp(self) -> int:
@@ -336,7 +329,6 @@ class ICB(StateModel):
         """
         if 0 <= fp <= 100:
             self.__fp = fp
-            self._fp_set = True
 
     @property
     def fc(self) -> int:
@@ -356,7 +348,6 @@ class ICB(StateModel):
         """
         if 0 <= fc:
             self.__fc = fc
-            self._fc_set = True
 
     @property
     def ctr(self) -> float:
@@ -377,67 +368,60 @@ class ICB(StateModel):
         candidate = round(ctr, 1)
         if self.OPERATING_TEMPERATURE[0] <= candidate <= self.OPERATING_TEMPERATURE[1]:
             self.__ctr = ctr
-            self._ctr_set = True
 
     @property
-    def tm(self) -> int:
+    def tm(self) -> SensorMode:
         """
         Get temperature controller mode (0 -> off 1 -> read-only 2 -> active)
         :return: temperature controller mode (0 -> off 1 -> read-only 2 -> active)
-        :rtype: int
+        :rtype: SensorMode
         """
         return self.__tm
 
     @tm.setter
-    def tm(self, tm: int) -> None:
+    def tm(self, tm: SensorMode) -> None:
         """
         Set temperature controller mode (0 -> off 1 -> read-only 2 -> active)
         :param tm: temperature controller mode (0 -> off 1 -> read-only 2 -> active)
-        :type tm: int
+        :type tm: SensorMode
         """
-        if tm in [0, 1, 2]:
-            self.__tm = tm
-            self._tm_set = True
+        self.__tm = tm
 
     @property
-    def cm(self) -> int:
+    def cm(self) -> SensorMode:
         """
         Get CO2 controller mode (0 -> off 1 -> read-only 2 -> active)
         :return: CO2 controller mode (0 -> off 1 -> read-only 2 -> active)
-        :rtype: int
+        :rtype: SensorMode
         """
         return self.__cm
 
     @cm.setter
-    def cm(self, cm: int) -> None:
+    def cm(self, cm: SensorMode) -> None:
         """
         Set CO2 controller mode (0 -> off 1 -> read-only 2 -> active)
         :param cm: CO2 controller mode (0 -> off 1 -> read-only 2 -> active)
         :type cm: int
         """
-        if cm in [0, 1, 2]:
-            self.__cm = cm
-            self._cm_set = True
+        self.__cm = cm
 
     @property
-    def om(self) -> int:
+    def om(self) -> SensorMode:
         """
         Get O2 controller mode (0 -> off 1 -> read-only 2 -> active)
         :return: o2 controller mode
-        :rtype: int
+        :rtype: SensorMode
         """
         return self.__om
 
     @om.setter
-    def om(self, om: int) -> None:
+    def om(self, om: SensorMode) -> None:
         """
         Set O2 controller mode (0 -> off 1 -> read-only 2 -> active)
         :param om: 0 -> off 1 -> read-only 2 -> active
-        :type om: int
+        :type om: SensorMode
         """
-        if om in [0, 1, 2]:
-            self.__om = om
-            self._om_set = True
+        self.__om = om
 
     @property
     def iv(self) -> str:
@@ -456,7 +440,6 @@ class ICB(StateModel):
         :type version: str
         """
         self.__iv = version
-        self._iv_set = True
 
     @property
     def timestamp(self) -> str:
@@ -475,7 +458,6 @@ class ICB(StateModel):
         :type timestamp: str
         """
         self.__timestamp = timestamp
-        self._timestamp_set = True
 
     @property
     def ct(self) -> str:
@@ -492,7 +474,6 @@ class ICB(StateModel):
         :type ct: str
         """
         self.__ct = ct
-        self._ct_set = True
 
     def int_to_float(self, val: int) -> float:
         """
