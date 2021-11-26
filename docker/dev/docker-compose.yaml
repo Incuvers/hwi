@@ -110,6 +110,7 @@ services:
     devices:
       - "/dev/ttyS0:/dev/ttyS0"
       - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/gpiomem:/dev/gpiomem"
     networks:
       - amqp
       - monitor
