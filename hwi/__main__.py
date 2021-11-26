@@ -16,6 +16,7 @@ import coloredlogs
 from pathlib import Path
 from envyaml import EnvYAML
 from configparser import ConfigParser
+from hwi.icb.encoder import RotaryEncoder
 
 from hwi.logs.formatter import pformat
 from hwi.amqp.client import AMQPClient
@@ -46,7 +47,7 @@ def logging_handler(config_path: Path, base_path: str) -> None:
         # load config from .yaml
         env = EnvYAML(config_path).export()
         logging.info("Parsed logger config:%s", pformat(env))
-        logging.config.dictConfig(env) # type: ignore
+        logging.config.dictConfig(env)  # type: ignore
         logging.info('Configuring logger using dict config')
     except ValueError as exc:
         logging.exception(
@@ -78,7 +79,6 @@ def device_certs_handler(base_path: str) -> None:
 
 _log = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG", logger=_log)
-
 _log.info("HWI Logs: %s", os.environ.get("HWI_LOGS"))
 _log.info("HWI Certs: %s", os.environ.get("HWI_CERTS"))
 
@@ -91,11 +91,11 @@ device_certs_handler(
         Path(__file__).parent.parent.joinpath('instance/certs')))
 )
 
-
 # RMQ Event config
 host = os.environ['RABBITMQ_ADDR'].split(':')[0]
 port = int(os.environ['RABBITMQ_ADDR'].split(':')[1])
-
+RotaryEncoder()
+_log.info("Bound rotary encoder")
 client = AMQPClient(host, port)
 time.sleep(5)
 client.connect()
