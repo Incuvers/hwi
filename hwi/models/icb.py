@@ -125,9 +125,12 @@ class ICB(StateModel):
         :type value: float
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
-        # range validation
-        if self.OPERATING_TEMPERATURE[0] <= candidate <= self.OPERATING_TEMPERATURE[1]:
-            self.__tc = candidate
+        # Check if candidate is within the valid range
+
+        if self.OPERATING_TEMPERATURE[0] > candidate or candidate > self.OPERATING_TEMPERATURE[1]:
+            self._logger.error("Validation check failed for property TC setter with %s", candidate)
+            return
+        self.__tc = candidate
 
     @property
     def rh(self) -> float:
@@ -147,8 +150,10 @@ class ICB(StateModel):
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
         # range validation
-        if 0.0 <= candidate <= 100.0:
-            self.__rh = candidate
+        if 0.0 > candidate or candidate > 100.0:
+            self._logger.error("Validation check failed for property RH setter with %s", candidate)
+            return
+        self.__rh = candidate
 
     @property
     def oc(self) -> float:
@@ -168,8 +173,10 @@ class ICB(StateModel):
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
         # range validation
-        if 0.0 <= candidate <= 100.0:
-            self.__oc = candidate
+        if 0.0 > candidate or candidate > 100.0:
+            self._logger.error("Validation check failed for property OC setter with %s", candidate)
+            return
+        self.__oc = candidate
 
     @property
     def cc(self) -> float:
@@ -189,8 +196,10 @@ class ICB(StateModel):
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
         # range validation
-        if 0.0 <= candidate <= 100.0:
-            self.__cc = candidate
+        if 0.0 > candidate or candidate > 100.0:
+            self._logger.error("Validation check failed for property CC setter with %s", candidate)
+            return
+        self.__cc = candidate
 
     @property
     def tp(self) -> float:
@@ -210,8 +219,10 @@ class ICB(StateModel):
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
         # range validation
-        if self.TP_RANGE[0] <= candidate <= self.TP_RANGE[1]:
-            self.__tp = candidate
+        if self.TP_RANGE[0] > candidate or candidate > self.TP_RANGE[1]:
+            self._logger.error("Validation check failed for property TP setter with %s", candidate)
+            return
+        self.__tp = candidate
 
     @property
     def to(self) -> float:
@@ -250,8 +261,10 @@ class ICB(StateModel):
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
         # range validation
-        if self.CP_RANGE[0] <= candidate <= self.CP_RANGE[1]:
-            self.__cp = candidate
+        if self.CP_RANGE[0] > candidate or candidate > self.CP_RANGE[1]:
+            self._logger.error("Validation check failed for property CP setter with %s", candidate)
+            return
+        self.__cp = candidate
 
     @property
     def op(self) -> float:
@@ -271,8 +284,10 @@ class ICB(StateModel):
         """
         candidate = round(value, self.STORAGE_RESOLUTION)
         # range validation
-        if self.OP_RANGE[0] <= candidate <= self.OP_RANGE[1]:
-            self.__op = candidate
+        if self.OP_RANGE[0] > candidate or candidate > self.OP_RANGE[1]:
+            self._logger.error("Validation check failed for property OP setter with %s", candidate)
+            return
+        self.__op = candidate
 
     @property
     def hp(self) -> int:
@@ -290,8 +305,10 @@ class ICB(StateModel):
         :param hp: heater duty cycle in percent
         :type hp: int
         """
-        if 0 <= hp <= 100:
-            self.__hp = hp
+        if 0 > hp or hp > 100:
+            self._logger.error("Validation check failed for property HP setter with %s", hp)
+            return
+        self.__hp = hp
 
     @property
     def hc(self) -> bool:
@@ -327,8 +344,11 @@ class ICB(StateModel):
         :param fp: fan duty cycle in %
         :type fp: int
         """
-        if 0 <= fp <= 100:
-            self.__fp = fp
+        if 0 > fp or fp > 100:
+            self._logger.error("Validation check failed for property FP setter with %s", fp)
+            return
+
+        self.__fp = fp
 
     @property
     def fc(self) -> int:
@@ -346,8 +366,10 @@ class ICB(StateModel):
         :param fc: current fan speed in rpm
         :type fc: int
         """
-        if 0 <= fc:
-            self.__fc = fc
+        if 0 > fc:
+            self._logger.error("Validation check - FC setter less than bound %s", fc)
+            return
+        self.__fc = fc
 
     @property
     def ctr(self) -> float:
@@ -366,8 +388,10 @@ class ICB(StateModel):
         :type ctr: float
         """
         candidate = round(ctr, 1)
-        if self.OPERATING_TEMPERATURE[0] <= candidate <= self.OPERATING_TEMPERATURE[1]:
-            self.__ctr = ctr
+        if self.OPERATING_TEMPERATURE[0] > candidate or candidate > self.OPERATING_TEMPERATURE[1]:
+            self._logger.error("Validation check failed for property CTR setter with %s", candidate)
+            return
+        self.__ctr = ctr
 
     @property
     def tm(self) -> SensorMode:
