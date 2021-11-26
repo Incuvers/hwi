@@ -23,12 +23,13 @@ import time
 import serial
 import logging
 import binascii
-from typing import Dict, Union
+from typing import Union
 from threading import Condition
 
-from hwi.models.icb import ICB
+from hwi.models.icb import ICB, Sensorframe
 from hwi.events.registry import Registry as events
 from hwi.sys.tm import ThreadManager as tm
+from hwi.logs.formatter import pformat
 
 
 class Sensors:
@@ -82,10 +83,11 @@ class Sensors:
                     except ValueError as exc:
                         self._logger.exception("Sensorframe parse failed: %s", exc)
                     else:
+                        self._logger.debug("Sensorframe: %s", pformat(sensorframe))
                         # validate kvp against buffer
                         self._update_accepted_sensorframe(sensorframe)
                         telemetry = ICB()
-                        telemetry.deserialize(**sensorframe)
+                        telemetry.deserialize(sensorframe)  # type: ignore
                         events.amqp_publish.trigger('telemetry', telemetry.serialize())
             # report request buffer
             self._logger.info("Request Buffer: %s", self.buffer)
@@ -149,7 +151,7 @@ class Sensors:
             "CRC32 Fail: calculated: %s but received: %s", format(calc_crc, 'x'), format(msg_crc, 'x'))
         return False
 
-    def _parser(self, msg: str) -> Dict[str, Union[str, int]]:
+    def _parser(self, msg: str) -> Sensorframe:
         """
         Takes the serial output from the incubator and creates a dictionary
         using the two letter ident as a key and the value as a value.
