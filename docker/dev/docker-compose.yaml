@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: "3.7"
 
 networks:
   amqp:
@@ -99,6 +99,7 @@ services:
       org.label-schema.group: "monitoring"
   hwi:
     container_name: hwi
+    privileged: true
     depends_on:
       - rmq
     build:
