@@ -18,3 +18,8 @@ scrape_configs:
     scrape_interval: 10s
     static_configs:
       - targets: ['localhost:9090']
+
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets:
+          - 'rmq:15692'
