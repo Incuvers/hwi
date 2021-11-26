@@ -15,7 +15,6 @@ from hwi.events.pipeline import Pipeline
 ```
 Copyright © 2021 Incuvers. All rights reserved.
 """
-import os
 import time
 import logging
 import wiringpi
@@ -125,7 +124,7 @@ class RotaryEncoder:
 
     def publish_isr(self, _type: ISR) -> None:
         events.amqp_publish.trigger(
-            'topic/isr',
+            'isr',
             {
                 'type': _type
             }
