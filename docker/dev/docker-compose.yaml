@@ -1,5 +1,5 @@
 ---
-version: "3"
+version: "3.7"
 
 networks:
   amqp:
@@ -22,6 +22,8 @@ services:
     networks:
       - amqp
       - monitor
+    labels:
+      org.label-schema.group: "core"
   grafana:
     image: ghcr.io/incuvers/grafana:arm64
     container_name: grafana
@@ -33,7 +35,7 @@ services:
     networks:
       - monitor
     labels:
-      org.label-schema.group: "monitoring"
+      org.label-schema.group: "monitor"
   loki:
     image: grafana/loki:latest
     container_name: loki
@@ -41,7 +43,7 @@ services:
     networks:
       - monitor
     labels:
-      org.label-schema.group: "monitoring"
+      org.label-schema.group: "monitor"
   node:
     image: prom/node-exporter:v1.3.0
     container_name: node
@@ -55,12 +57,10 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    expose:
-      - 9100
     networks:
       - monitor
     labels:
-      org.label-schema.group: "monitoring"
+      org.label-schema.group: "monitor"
   cadvisor:
     image: braingamer/cadvisor-arm:latest
     container_name: cadvisor
@@ -74,12 +74,10 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
       - /cgroup:/cgroup:ro  # Linux only
-    expose:
-      - 8080
     networks:
       - monitor
     labels:
-      org.label-schema.group: "monitoring"
+      org.label-schema.group: "monitor"
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -91,14 +89,13 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yaml'
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=200h'
-    expose:
-      - 9090
     networks:
       - monitor
     labels:
-      org.label-schema.group: "monitoring"
+      org.label-schema.group: "monitor"
   hwi:
     container_name: hwi
+    privileged: true
     depends_on:
       - rmq
     build:
@@ -110,6 +107,7 @@ services:
     devices:
       - "/dev/ttyS0:/dev/ttyS0"
       - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/gpiomem:/dev/gpiomem"
     networks:
       - amqp
       - monitor
@@ -120,3 +118,5 @@ services:
       - HWI_LOGS=/app/instance/logs
       - HWI_CERTS=/app/instance/certs
       - LOKI_ENDPOINT="http://loki:3100/loki/api/v1/push"
+    labels:
+      org.label-schema.group: "core"

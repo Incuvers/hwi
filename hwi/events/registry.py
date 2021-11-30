@@ -18,7 +18,6 @@ Copyright © 2021 Incuvers. All rights reserved.
 
 from typing import Any, Callable, Dict, Union
 from hwi.events.event import Event
-from hwi.events.pipeline import Pipeline
 
 
 class Registry:
@@ -33,9 +32,3 @@ class Registry:
     co2_calibration = Event[Callable[[], None]]('CO2_CALIBRATION')
     # AMQP events
     amqp_publish = Event[Callable[[str, Dict[str, Any]], None]]('AMQP_PUBLISH')
-    # pipeline
-    preview_pipeline = Pipeline("PREVIEW", 2)
-    thumbnail_pipeline = Pipeline("THUMBNAIL", 2)
-    avatar_pipeline = Pipeline("AVATAR", 3)
-    registration_pipeline = Pipeline("REGISTRATION", 3)
-    capture_pipeline = Pipeline("CAPTURE", 3)

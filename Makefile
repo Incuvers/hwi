@@ -22,8 +22,12 @@ lint: ## lint codebase using a combination of yamllint, shellcheck and flake8
 	@./scripts/lint.sh
 
 .PHONY: dev 
-dev: config ## Run development environment
+dev: pull config ## Run development environment
 	@./scripts/dev.sh
+
+.PHONY: pull 
+pull: ## Pull from container registry
+	@docker-compose -f docker/dev/docker-compose.yaml pull
 
 .PHONY: clean
 clean: ## Clean docker environment
@@ -32,7 +36,3 @@ clean: ## Clean docker environment
 .PHONY: config
 config: ## Run docker compose config validation
 	@./scripts/config.sh
-
-.PHONY: pull
-pull: ## pull service containers
-	@docker compose -f docker/docker-compose.yaml pull
