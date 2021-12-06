@@ -96,7 +96,7 @@ host = os.environ['RABBITMQ_ADDR'].split(':')[0]
 port = int(os.environ['RABBITMQ_ADDR'].split(':')[1])
 RotaryEncoder()
 _log.info("Bound rotary encoder")
-client = AMQPClient(host, port)
+client = AMQPClient(host, port, os.environ.get('AMQP_USER', ''), os.environ.get('AMQP_PASS', ''))
 time.sleep(5)
 client.connect()
 alink = Sensors(serial_port=os.environ.get('HWI_GPIO_SERIAL', '/dev/ttyS0'))
