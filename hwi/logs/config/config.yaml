@@ -17,7 +17,11 @@ loggers:
     level: "DEBUG"
     handlers: ["loki_handler", "file_handler"]
     propagate: false
-  hwi.rmq:
+  hwi.events:
+    level: "DEBUG"
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  hwi.amqp:
     level: "DEBUG"
     handlers: ["loki_handler", "file_handler"]
     propagate: false
@@ -26,7 +30,7 @@ loggers:
     handlers: ["loki_handler", "file_handler"]
     propagate: false
   pika:
-    level: "DEBUG"
+    level: "INFO"
     handlers: ["loki_handler", "file_handler"]
     propagate: false
 
