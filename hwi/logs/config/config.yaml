@@ -29,6 +29,10 @@ loggers:
     level: "DEBUG"
     handlers: ["loki_handler", "file_handler"]
     propagate: false
+  urllib:
+    level: "WARNING"
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false 
   pika:
     level: "INFO"
     handlers: ["loki_handler", "file_handler"]
