@@ -32,7 +32,7 @@ loggers:
   urllib:
     level: "WARNING"
     handlers: ["loki_handler", "file_handler"]
-    propagate: false 
+    propagate: false
   pika:
     level: "INFO"
     handlers: ["loki_handler", "file_handler"]
