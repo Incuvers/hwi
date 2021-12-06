@@ -49,7 +49,8 @@ class AMQPClient:
     def publish(self, route: str, body: Dict[str, Any]) -> None:
         if not self.channel:
             raise ConnectionError
-        self._logger.info("Message payload: %s", pformat(body))
+        route_key = f'{AMQPConf.EXCHANGE}.{route}'
+        self._logger.info("Message payload to %s: %s", route_key, pformat(body))
         self.channel.basic_publish(exchange=AMQPConf.EXCHANGE,
-                                   routing_key=route,
+                                   routing_key=route_key,
                                    body=json.dumps(body))
