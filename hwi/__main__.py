@@ -8,7 +8,6 @@ Copyright © 2021 Incuvers. All rights reserved.
 """
 
 import sys
-import time
 import os
 import logging
 import logging.config
@@ -16,8 +15,8 @@ import coloredlogs
 from pathlib import Path
 from envyaml import EnvYAML
 from configparser import ConfigParser
-from hwi.icb.encoder import RotaryEncoder
 
+from hwi.icb.encoder import RotaryEncoder
 from hwi.logs.formatter import pformat
 from hwi.amqp.client import AMQPClient
 from hwi.alink.sensors import Sensors
@@ -76,7 +75,6 @@ def device_certs_handler(base_path: str) -> None:
     os.environ['AMQP_USER'] = config.get('amqp', 'user')
     os.environ['AMQP_PASS'] = config.get('amqp', 'password')
 
-
 _log = logging.getLogger(__name__)
 coloredlogs.install(level="DEBUG", logger=_log)
 _log.info("HWI Logs: %s", os.environ.get("HWI_LOGS"))
@@ -91,14 +89,12 @@ device_certs_handler(
         Path(__file__).parent.parent.joinpath('instance/certs')))
 )
 
-# RMQ Event config
-host = os.environ['RABBITMQ_ADDR'].split(':')[0]
-port = int(os.environ['RABBITMQ_ADDR'].split(':')[1])
 RotaryEncoder()
 _log.info("Bound rotary encoder")
-client = AMQPClient(host, port, os.environ.get('AMQP_USER', ''), os.environ.get('AMQP_PASS', ''))
-time.sleep(5)
-client.connect()
 alink = Sensors(serial_port=os.environ.get('HWI_GPIO_SERIAL', '/dev/ttyS0'))
-time.sleep(5)
+_log.info("Arduino link established")
+host = os.environ['RABBITMQ_ADDR'].split(':')[0]
+port = int(os.environ['RABBITMQ_ADDR'].split(':')[1])
+AMQPClient(host, port, os.environ.get('AMQP_USER', ''), os.environ.get('AMQP_PASS', ''))
+_log.info("AMQP client created")
 alink.monitor()
