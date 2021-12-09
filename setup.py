@@ -2,15 +2,14 @@
 
 import io
 import os
-
 from setuptools import find_packages, setup
 
 # meta-data.
-NAME = 'iris-hwi'
-DESCRIPTION = 'Software for IRIS: Incuvers Real-time Imaging System. An IoT cell incubator with imaging capabilities'
-EMAIL = 'info@incuvers.com'
-AUTHOR = 'Incuvers'
-REQUIRES_PYTHON = '>=3.8.0'
+NAME = "hwi"
+DESCRIPTION = "Hardware driver for IRIS: Incuvers Real-time Imaging System. An IoT cell incubator with imaging capabilities"
+EMAIL = "info@incuvers.com"
+AUTHOR = "Incuvers"
+REQUIRES_PYTHON = ">=3.8.0"
 VERSION = False
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -55,11 +54,7 @@ setup(
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 4 - Beta',
-        'Framework :: Flask',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Embedded Systems',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Topic :: Scientific/Engineering :: Medical Science Apps',
