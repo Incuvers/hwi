@@ -16,6 +16,7 @@ from pathlib import Path
 from envyaml import EnvYAML
 from configparser import ConfigParser
 
+from hwi.sys import system
 from hwi.icb.encoder import RotaryEncoder
 from hwi.logs.formatter import pformat
 from hwi.amqp.client import AMQPClient
@@ -97,4 +98,7 @@ host = os.environ['RABBITMQ_ADDR'].split(':')[0]
 port = int(os.environ['RABBITMQ_ADDR'].split(':')[1])
 AMQPClient(host, port, os.environ.get('AMQP_USER', ''), os.environ.get('AMQP_PASS', ''))
 _log.info("AMQP client created")
-alink.monitor()
+try:
+    alink.monitor()
+except BaseException:
+    system.shutdown()

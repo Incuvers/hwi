@@ -2,10 +2,11 @@ import sys
 import time
 import socket
 import logging
+from typing import NoReturn
 
 _logger = logging.getLogger(__name__)
 
-def shutdown():
+def shutdown() -> NoReturn:
     """
     Shutdown handler
     """
