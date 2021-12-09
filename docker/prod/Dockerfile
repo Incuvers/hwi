@@ -4,14 +4,15 @@ LABEL version="2.0"
 LABEL Christian Sargusingh "https://github.com/cSDes1gn"
 
 # Grab dependencies and generate locale
-RUN apt update && apt upgrade -y && apt install -y git sudo locales && locale-gen en_US.UTF-8
 WORKDIR /app
 
 # add package dependancy indices
 COPY apt-packages.txt /app/apt-packages.txt
-RUN DEBIAN_FRONTEND=noninteractive TZ=America/New_York \
-    xargs -a apt-packages.txt apt install \
-    -y --no-install-recommends --fix-missing
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y git sudo locales && \
+    locale-gen en_US.UTF-8 && \
+    DEBIAN_FRONTEND=noninteractive TZ=America/New_York xargs -a apt-packages.txt apt install -y --no-install-recommends --fix-missing
 # install tis from source
 RUN git clone https://github.com/TheImagingSource/tiscamera.git
 WORKDIR /app/tiscamera
