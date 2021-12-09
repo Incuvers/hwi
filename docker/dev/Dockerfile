@@ -30,4 +30,4 @@ RUN make && make install
 WORKDIR /app
 RUN rm -rfv tiscamera/
 
-ENTRYPOINT [ "./docker/dev/entry.sh" ]
+ENTRYPOINT [ "python3", "-m", "hwi" ]
