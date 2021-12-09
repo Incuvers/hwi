@@ -5,19 +5,13 @@ LABEL Christian Sargusingh "https://github.com/cSDes1gn"
 
 # Grab dependencies and generate locale
 RUN apt update && apt upgrade -y && apt install -y git sudo locales && locale-gen en_US.UTF-8
-
 WORKDIR /app
 
 # add package dependancy indices
 COPY apt-packages.txt /app/apt-packages.txt
-COPY requirements.txt /app/requirements.txt
-
-# install dependancies
 RUN DEBIAN_FRONTEND=noninteractive TZ=America/New_York \
     xargs -a apt-packages.txt apt install \
     -y --no-install-recommends --fix-missing
-RUN python3 -m pip install -r requirements.txt
-
 # install tis from source
 RUN git clone https://github.com/TheImagingSource/tiscamera.git
 WORKDIR /app/tiscamera
@@ -31,5 +25,7 @@ WORKDIR /app
 RUN rm -rfv tiscamera/
 
 COPY . .
+# install hwi from source
+RUN python3 -m pip install .
 
-ENTRYPOINT [ "./docker/prod/entry.sh" ]
+ENTRYPOINT [ "python3", "-m", "hwi" ]
