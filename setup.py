@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 # meta-data.
 NAME = "hwi"
-DESCRIPTION = "Hardware driver for IRIS: Incuvers Real-time Imaging System. An IoT cell incubator with imaging capabilities"
+DESCRIPTION = "Hardware driver for IRIS, an IoT cell incubator with imaging capabilities"
 EMAIL = "info@incuvers.com"
 AUTHOR = "Incuvers"
 REQUIRES_PYTHON = ">=3.8.0"
