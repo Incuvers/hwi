@@ -116,6 +116,7 @@ services:
       - HWI_GPIO_SERIAL=/dev/ttyS0
       - HWI_USB_SERIAL=/dev/ttyUSB0
       - HWI_LOGS=/app/instance/logs
+      - HWI_LOG_LEVEL=INFO
       - HWI_CERTS=/app/instance/certs
       - LOKI_ENDPOINT="http://loki:3100/loki/api/v1/push"
     labels:
