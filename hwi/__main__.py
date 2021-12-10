@@ -78,10 +78,6 @@ def device_certs_handler(base_path: str) -> None:
     os.environ['AMQP_USER'] = config.get('amqp', 'user')
     os.environ['AMQP_PASS'] = config.get('amqp', 'password')
 
-_log = logging.getLogger(__name__)
-_log.info("HWI Logs: %s", os.environ.get("HWI_LOGS"))
-_log.info("HWI Certs: %s", os.environ.get("HWI_CERTS"))
-
 logging_handler(
     config_path=Path(__file__).parent.joinpath("logs/config/config.yaml"),
     base_path=os.environ.get("HWI_LOGS", str(Path(__file__).parent.joinpath('logs/')))
@@ -90,6 +86,10 @@ device_certs_handler(
     base_path=os.environ.get("HWI_CERTS", str(
         Path(__file__).parent.parent.joinpath('instance/certs')))
 )
+
+_log = logging.getLogger(__name__)
+_log.info("HWI Logs: %s", os.environ.get("HWI_LOGS"))
+_log.info("HWI Certs: %s", os.environ.get("HWI_CERTS"))
 
 RotaryEncoder()
 _log.info("Bound rotary encoder")
