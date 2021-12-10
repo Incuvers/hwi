@@ -17,13 +17,12 @@ import logging
 import logging.config
 from pathlib import Path
 from typing import Any, Dict
-from uuid import uuid4
 from envyaml import EnvYAML
 from configparser import ConfigParser
-from hwi.logs.formatter import pformat
 from pika import BlockingConnection, ConnectionParameters, PlainCredentials
 from hwi.system import wfi
 from hwi.models.icb import ICB
+from hwi.logs.formatter import pformat
 
 
 EXCHANGE = 'device'
