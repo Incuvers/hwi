@@ -11,7 +11,7 @@ jobs:
     runs-on: [self-hosted, linux, arm64, docker]
     strategy:
       matrix:
-        stage: [ prod, mock ]
+        stage: [prod, mock]
         include:
           - stage: mock
             suffix: '-mock'
