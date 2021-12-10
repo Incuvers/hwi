@@ -9,14 +9,6 @@ loggers:
     level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
     propagate: false
-  hwi.alink:
-    level: ${HWI_LOG_LEVEL}
-    handlers: ["loki_handler", "file_handler"]
-    propagate: false
-  hwi.icb:
-    level: ${HWI_LOG_LEVEL}
-    handlers: ["loki_handler", "file_handler"]
-    propagate: false
   hwi.models:
     level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
