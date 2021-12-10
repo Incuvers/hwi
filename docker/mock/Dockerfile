@@ -8,7 +8,7 @@ RUN apt update && \
     apt upgrade -y && \
     apt install -y git sudo locales python3 python3-pip && \
     locale-gen en_US.UTF-8
-COPY docker/mock /app/mock/
+COPY docker/mock /app
 RUN python3 -m pip install -r requirements.txt
 
 ENTRYPOINT [ "python3", "-m", "hwi" ]
