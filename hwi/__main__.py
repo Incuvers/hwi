@@ -11,7 +11,6 @@ import sys
 import os
 import logging
 import logging.config
-import coloredlogs
 from pathlib import Path
 from envyaml import EnvYAML
 from configparser import ConfigParser
@@ -31,6 +30,9 @@ def logging_handler(config_path: Path, base_path: str) -> None:
     :param base_path: logging path
     :type base_path: str
     """
+    # set default log level if undef
+    if not os.environ.get('HWI_LOG_LEVEL'):
+        os.environ['HWI_LOG_LEVEL'] = "INFO"
     os.makedirs(base_path, mode=0o777, exist_ok=True)
     # using split '.' to remove logs for rolling file handlers with format: <name>.log.<number>
     logs = list(
@@ -76,11 +78,6 @@ def device_certs_handler(base_path: str) -> None:
     os.environ['AMQP_USER'] = config.get('amqp', 'user')
     os.environ['AMQP_PASS'] = config.get('amqp', 'password')
 
-_log = logging.getLogger(__name__)
-coloredlogs.install(level="DEBUG", logger=_log)
-_log.info("HWI Logs: %s", os.environ.get("HWI_LOGS"))
-_log.info("HWI Certs: %s", os.environ.get("HWI_CERTS"))
-
 logging_handler(
     config_path=Path(__file__).parent.joinpath("logs/config/config.yaml"),
     base_path=os.environ.get("HWI_LOGS", str(Path(__file__).parent.joinpath('logs/')))
@@ -89,6 +86,10 @@ device_certs_handler(
     base_path=os.environ.get("HWI_CERTS", str(
         Path(__file__).parent.parent.joinpath('instance/certs')))
 )
+
+_log = logging.getLogger(__name__)
+_log.info("HWI Logs: %s", os.environ.get("HWI_LOGS"))
+_log.info("HWI Certs: %s", os.environ.get("HWI_CERTS"))
 
 RotaryEncoder()
 _log.info("Bound rotary encoder")
