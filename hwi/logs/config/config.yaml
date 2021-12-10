@@ -3,44 +3,47 @@ version: 1
 disable_existing_loggers: false
 loggers:
   __main__:
-    level: "DEBUG"
+    level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
+  hwi.sys:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
   hwi.alink:
-    level: "DEBUG"
+    level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.icb:
-    level: "DEBUG"
+    level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.models:
-    level: "DEBUG"
+    level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.events:
-    level: "DEBUG"
+    level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.amqp:
-    level: "DEBUG"
+    level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
     propagate: false
   hwi.microscope:
-    level: "DEBUG"
+    level: ${HWI_LOG_LEVEL}
     handlers: ["loki_handler", "file_handler"]
     propagate: false
-  urllib:
+  urllib3:
     level: "WARNING"
     handlers: ["loki_handler", "file_handler"]
     propagate: false
   pika:
-    level: "INFO"
+    level: "WARNING"
     handlers: ["loki_handler", "file_handler"]
     propagate: false
 
 handlers:
   file_handler:
-    level: "DEBUG"
     class: "logging.handlers.RotatingFileHandler"
     formatter: default
     filename: ${HWI_LOGS}/hwi.log
@@ -48,7 +51,6 @@ handlers:
     maxBytes: 1000000
     backupCount: 10
   loki_handler:
-    level: "DEBUG"
     class: "logging_loki.LokiHandler"
     url: ${LOKI_ENDPOINT}
     tags:
