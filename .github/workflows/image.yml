@@ -15,8 +15,6 @@ jobs:
         include:
           - stage: mock
             suffix: '-mock'
-          - stage: prod
-            suffix: ''
     permissions:
       packages: write
       contents: read
@@ -36,11 +34,11 @@ jobs:
           flavor: |
             latest=auto
             prefix=
-            suffix=${{ matrix.suffix }}
+            suffix=
           tags: |
             type=raw,value=latest
           images: |
-            ghcr.io/${{ github.repository }}
+            ghcr.io/${{ github.repository }}${{ matrix.suffix }}
       - name: Build and push Docker images
         id: docker_build
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
