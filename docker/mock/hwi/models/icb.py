@@ -36,7 +36,7 @@ class ICB(StateModel):
     """
     STORAGE_RESOLUTION = 1                                          # resolution of float values stored in this model
     CONVERSION_RESOLUTION = 2                                       # resolution of int/float conversions
-    OPERATING_TEMPERATURE: Tuple[float, float] = (0.0, 50.0)     # Reasonable operating temp
+    OPERATING_TEMPERATURE: Tuple[float, float] = (-40.0, 100.0)     # Reasonable operating temp
     OP_RANGE: Tuple[float, float] = (0.1, 21.0)                     # O2 min, max setpoint
     CP_RANGE: Tuple[float, float] = (0.1, 21.0)                     # CO2 min, max setpoint
     TP_RANGE: Tuple[float, float] = (25.0, 40.0)                    # Temperature min, max setpoint

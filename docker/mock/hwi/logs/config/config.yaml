@@ -1,0 +1,70 @@
+---
+version: 1
+disable_existing_loggers: false
+loggers:
+  __main__:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+  hwi.sys:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  hwi.alink:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  hwi.icb:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  hwi.models:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  hwi.events:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  hwi.amqp:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  hwi.microscope:
+    level: ${HWI_LOG_LEVEL}
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  urllib3:
+    level: "WARNING"
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+  pika:
+    level: "WARNING"
+    handlers: ["loki_handler", "file_handler"]
+    propagate: false
+
+handlers:
+  file_handler:
+    class: "logging.handlers.RotatingFileHandler"
+    formatter: default
+    filename: ${HWI_LOGS}/hwi.log
+    mode: "a"
+    maxBytes: 1000000
+    backupCount: 10
+  loki_handler:
+    class: "logging_loki.LokiHandler"
+    url: ${LOKI_ENDPOINT}
+    tags:
+      service: "hwi"
+    version: "1"
+    formatter: epoch
+  console_handler:
+    class: "logging.StreamHandler"
+    formatter: default
+
+formatters:
+  default:
+    format: "%(created)f %(threadName)s %(name)s line:%(lineno)d - %(levelname)s: %(message)s"
+  epoch:
+    format: "%(created)f %(threadName)s %(name)s %(lineno)d - %(levelname)s: %(message)s"
+  simple:
+    format: "%(name)s %(lineno)d - %(levelname)s: %(message)s"
